@@ -1,0 +1,57 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+		65F223F474D447646820F46B /* CaptureEngine.swift */ = {isa = PBXBuildFile; fileRef = B0AE375D8313895A449F383A; };
+		DA341F4F40B120893B633613 /* CaptureModel.swift */ = {isa = PBXBuildFile; fileRef = 4376437EE8D235CE71CA04DC; };
+		7725750B66BC1F4A4C8D10C9 /* ChirpPlayer.swift */ = {isa = PBXBuildFile; fileRef = 40AD96A9F3A996535F1D5D69; };
+		FB73BE2A7887F32D512EC848 /* ContentView.swift */ = {isa = PBXBuildFile; fileRef = 4D2D059072C1E33E64D7DCDF; };
+		5A11383AFD9A3104DA8C304C /* HostClock.swift */ = {isa = PBXBuildFile; fileRef = FDC9F20FAFF132E65AE89EFF; };
+		3E58B86073421CDB136BE730 /* PeerSync.swift */ = {isa = PBXBuildFile; fileRef = 8ABDDD777F4FE44E7B714E9C; };
+		A154A59D23703A765D891480 /* PoseTracker.swift */ = {isa = PBXBuildFile; fileRef = B159E7C450E1F0BC8148668F; };
+		8955F49E6B1845B341849AF5 /* SLUCaptureApp.swift */ = {isa = PBXBuildFile; fileRef = A68B3C6A6BC86146D0A45224; };
+		06B8860302E526F18EDCCCAD /* TakeStore.swift */ = {isa = PBXBuildFile; fileRef = B4AA731EF6324F4D8CF86814; };
+		90437542A4CF1B7D8BC24CC4 /* manifests.json */ = {isa = PBXBuildFile; fileRef = EABA7A94FD9B5BD2036BDBB2; };
+
+		D2A57DC1D883FD21FB995169 /* SLUCapture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SLUCapture.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0AE375D8313895A449F383A /* CaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureEngine.swift; sourceTree = "<group>"; };
+		4376437EE8D235CE71CA04DC /* CaptureModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureModel.swift; sourceTree = "<group>"; };
+		40AD96A9F3A996535F1D5D69 /* ChirpPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChirpPlayer.swift; sourceTree = "<group>"; };
+		4D2D059072C1E33E64D7DCDF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		FDC9F20FAFF132E65AE89EFF /* HostClock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostClock.swift; sourceTree = "<group>"; };
+		8ABDDD777F4FE44E7B714E9C /* PeerSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeerSync.swift; sourceTree = "<group>"; };
+		B159E7C450E1F0BC8148668F /* PoseTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseTracker.swift; sourceTree = "<group>"; };
+		A68B3C6A6BC86146D0A45224 /* SLUCaptureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLUCaptureApp.swift; sourceTree = "<group>"; };
+		B4AA731EF6324F4D8CF86814 /* TakeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TakeStore.swift; sourceTree = "<group>"; };
+		EABA7A94FD9B5BD2036BDBB2 /* manifests.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = manifests.json; sourceTree = "<group>"; };
+		E34671B84360ABBFBBB0C5D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+
+		4F6F5CC3FCCF73F75AE9CCF4 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		2B731CEFC6751AAE0EC69B98 = {isa = PBXGroup; children = (DB0F6F37EBEB6EA094891243, 86024CAD1E83101D97359D73); sourceTree = "<group>"; };
+		DB0F6F37EBEB6EA094891243 /* SLUCapture */ = {isa = PBXGroup; children = (B0AE375D8313895A449F383A, 4376437EE8D235CE71CA04DC, 40AD96A9F3A996535F1D5D69, 4D2D059072C1E33E64D7DCDF, FDC9F20FAFF132E65AE89EFF, 8ABDDD777F4FE44E7B714E9C, B159E7C450E1F0BC8148668F, A68B3C6A6BC86146D0A45224, B4AA731EF6324F4D8CF86814, EABA7A94FD9B5BD2036BDBB2, E34671B84360ABBFBBB0C5D2); path = SLUCapture; sourceTree = "<group>"; };
+		86024CAD1E83101D97359D73 /* Products */ = {isa = PBXGroup; children = (D2A57DC1D883FD21FB995169); name = Products; sourceTree = "<group>"; };
+		42AEFBAE01D2DFD981F7DA7D /* SLUCapture */ = {isa = PBXNativeTarget; buildConfigurationList = A7E6AA241C33F23A9EE9DEE4; buildPhases = (F2AB5FB218DA8B84623F4557, 4F6F5CC3FCCF73F75AE9CCF4, 55B558C7EF820E6E00E5993B); buildRules = (); dependencies = (); name = SLUCapture; productName = SLUCapture; productReference = D2A57DC1D883FD21FB995169; productType = "com.apple.product-type.application"; };
+		46F86FAA6BBF9AC94A7E4595 /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 1500; LastUpgradeCheck = 1500; }; buildConfigurationList = E21E7622AE83679A442CB89F; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = 2B731CEFC6751AAE0EC69B98; productRefGroup = 86024CAD1E83101D97359D73; projectDirPath = ""; projectRoot = ""; targets = (42AEFBAE01D2DFD981F7DA7D); };
+		55B558C7EF820E6E00E5993B = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (90437542A4CF1B7D8BC24CC4); runOnlyForDeploymentPostprocessing = 0; };
+		F2AB5FB218DA8B84623F4557 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (65F223F474D447646820F46B, DA341F4F40B120893B633613, 7725750B66BC1F4A4C8D10C9, FB73BE2A7887F32D512EC848, 5A11383AFD9A3104DA8C304C, 3E58B86073421CDB136BE730, A154A59D23703A765D891480, 8955F49E6B1845B341849AF5, 06B8860302E526F18EDCCCAD); runOnlyForDeploymentPostprocessing = 0; };
+		BDBC475092EF64D21C5DE60B /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; ENABLE_STRICT_OBJC_MSGSEND = YES;
+ IPHONEOS_DEPLOYMENT_TARGET = 17.0; SDKROOT = iphoneos; SWIFT_COMPILATION_MODE = wholemodule; DEBUG_INFORMATION_FORMAT = dwarf; ONLY_ACTIVE_ARCH = YES; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; }; name = Debug; };
+		80D34FDBFC214A62DA2B7427 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; ENABLE_STRICT_OBJC_MSGSEND = YES;
+ IPHONEOS_DEPLOYMENT_TARGET = 17.0; SDKROOT = iphoneos; SWIFT_COMPILATION_MODE = wholemodule; SWIFT_OPTIMIZATION_LEVEL = "-O"; VALIDATE_PRODUCT = YES; }; name = Release; };
+		40EE942D4E7DF005E21C0771 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1;
+ DEVELOPMENT_TEAM = ""; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = SLUCapture/Info.plist; IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+ LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks"; MARKETING_VERSION = 2.0;
+ PRODUCT_BUNDLE_IDENTIFIER = com.slu.mocap.capture; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = iphoneos;
+ SUPPORTED_PLATFORMS = "iphoneos"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 1; }; name = Debug; };
+		29B64A418306CC02D181FEE4 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1;
+ DEVELOPMENT_TEAM = ""; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = SLUCapture/Info.plist; IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+ LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks"; MARKETING_VERSION = 2.0;
+ PRODUCT_BUNDLE_IDENTIFIER = com.slu.mocap.capture; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = iphoneos;
+ SUPPORTED_PLATFORMS = "iphoneos"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 1; }; name = Release; };
+		E21E7622AE83679A442CB89F = {isa = XCConfigurationList; buildConfigurations = (BDBC475092EF64D21C5DE60B, 80D34FDBFC214A62DA2B7427); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A7E6AA241C33F23A9EE9DEE4 = {isa = XCConfigurationList; buildConfigurations = (40EE942D4E7DF005E21C0771, 29B64A418306CC02D181FEE4); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+	};
+	rootObject = 46F86FAA6BBF9AC94A7E4595 /* Project object */;
+}

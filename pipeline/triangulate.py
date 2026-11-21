@@ -200,8 +200,13 @@ def from_vision3d(frames: list[dict], T: int, fps: float, start_s: float = 0.0):
     """Vision 3D json [{t, joints:{name:[x,y,z]}}] (camera space, m) -> X (T,133,3), conf."""
     X = np.full((T, S.N_KP, 3), np.nan)
     ts = np.array([f["t"] for f in frames]) - start_s
+    def get(f, key):   # Vision raw names may carry prefixes (e.g. "human_left_..."): match by suffix
+        for n, v in f["joints"].items():
+            if n == key or n.endswith(key):
+                return v
+        return [np.nan] * 3
     for k_name, k in VISION3D_MAP.items():
-        v = np.array([f["joints"].get(k_name, [np.nan] * 3) for f in frames], float)
+        v = np.array([get(f, k_name) for f in frames], float)
         for d in range(3):
             X[:, k, d] = np.interp(np.arange(T) / fps, ts, v[:, d], left=np.nan, right=np.nan)
     # ears ~ head, toes/heels from ankle (flat feet assumption)

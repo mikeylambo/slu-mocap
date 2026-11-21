@@ -1,0 +1,605 @@
+{
+ "version": 1,
+ "games": [
+  {
+   "id": "kairos",
+   "moves": [
+    {
+     "id": "idle_loop",
+     "loop": true,
+     "notes": "Relaxed weight shifts, 6-8 s.",
+     "tags": [
+      "idle"
+     ]
+    },
+    {
+     "id": "walk_loop",
+     "loop": true,
+     "notes": "",
+     "tags": [
+      "locomotion"
+     ]
+    },
+    {
+     "id": "run_loop",
+     "loop": true,
+     "notes": "",
+     "tags": [
+      "locomotion"
+     ]
+    },
+    {
+     "id": "turn_180",
+     "loop": false,
+     "notes": "Plant and pivot over the left foot.",
+     "tags": [
+      "locomotion"
+     ]
+    },
+    {
+     "id": "jump_takeoff",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "jump"
+     ]
+    },
+    {
+     "id": "jump_air",
+     "loop": false,
+     "notes": "Record a full jump; trim to the airborne section in Review.",
+     "tags": [
+      "jump"
+     ]
+    },
+    {
+     "id": "jump_land",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "jump"
+     ]
+    },
+    {
+     "id": "hit_light",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "hit_heavy",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "hit_back",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "knockdown_getup",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "death_a",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "death_b",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "powerup_charge",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "power"
+     ]
+    },
+    {
+     "id": "powerup_release",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "power"
+     ]
+    },
+    {
+     "id": "stance_loop",
+     "loop": true,
+     "notes": "Fighting stance bounce, 2-3 cycles.",
+     "tags": [
+      "idle"
+     ]
+    },
+    {
+     "id": "jab",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "attack"
+     ]
+    },
+    {
+     "id": "cross",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "attack"
+     ]
+    },
+    {
+     "id": "hook",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "attack"
+     ]
+    },
+    {
+     "id": "kick_front",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "attack"
+     ]
+    },
+    {
+     "id": "kick_round",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "attack"
+     ]
+    },
+    {
+     "id": "kick_spin",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "attack"
+     ]
+    },
+    {
+     "id": "combo_3",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "attack"
+     ]
+    },
+    {
+     "id": "combo_5_launcher",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "attack"
+     ]
+    },
+    {
+     "id": "dash",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "movement"
+     ]
+    },
+    {
+     "id": "dash_stop",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "movement"
+     ]
+    },
+    {
+     "id": "fly_hover_loop",
+     "loop": true,
+     "notes": "Perform on a stool or with a wide stance; feet are not locked.",
+     "tags": [
+      "flight"
+     ]
+    },
+    {
+     "id": "fly_forward_loop",
+     "loop": true,
+     "notes": "Perform on a stool or with a wide stance; feet are not locked.",
+     "tags": [
+      "flight"
+     ]
+    },
+    {
+     "id": "beam_charge",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "power"
+     ]
+    },
+    {
+     "id": "beam_fire",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "power",
+      "hit_event"
+     ]
+    },
+    {
+     "id": "instant_transmission",
+     "loop": false,
+     "notes": "Two fingers to forehead, vanish pose.",
+     "tags": [
+      "power"
+     ]
+    },
+    {
+     "id": "ki_volley",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "power",
+      "hit_event"
+     ]
+    },
+    {
+     "id": "block",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "defense"
+     ]
+    },
+    {
+     "id": "parry",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "defense",
+      "hit_event"
+     ]
+    },
+    {
+     "id": "victory",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "cinematic"
+     ]
+    },
+    {
+     "id": "fade_ending",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "cinematic"
+     ]
+    },
+    {
+     "id": "taunt_a",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "cinematic"
+     ]
+    },
+    {
+     "id": "taunt_b",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "cinematic"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "no_extraction",
+   "moves": [
+    {
+     "id": "idle_loop",
+     "loop": true,
+     "notes": "Relaxed weight shifts, 6-8 s.",
+     "tags": [
+      "idle"
+     ]
+    },
+    {
+     "id": "walk_loop",
+     "loop": true,
+     "notes": "",
+     "tags": [
+      "locomotion"
+     ]
+    },
+    {
+     "id": "run_loop",
+     "loop": true,
+     "notes": "",
+     "tags": [
+      "locomotion"
+     ]
+    },
+    {
+     "id": "turn_180",
+     "loop": false,
+     "notes": "Plant and pivot over the left foot.",
+     "tags": [
+      "locomotion"
+     ]
+    },
+    {
+     "id": "jump_takeoff",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "jump"
+     ]
+    },
+    {
+     "id": "jump_air",
+     "loop": false,
+     "notes": "Record a full jump; trim to the airborne section in Review.",
+     "tags": [
+      "jump"
+     ]
+    },
+    {
+     "id": "jump_land",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "jump"
+     ]
+    },
+    {
+     "id": "hit_light",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "hit_heavy",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "hit_back",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "knockdown_getup",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "death_a",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "death_b",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "reaction"
+     ]
+    },
+    {
+     "id": "crouch_idle",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "stealth",
+      "idle"
+     ]
+    },
+    {
+     "id": "crouch_walk_loop",
+     "loop": true,
+     "notes": "",
+     "tags": [
+      "locomotion"
+     ]
+    },
+    {
+     "id": "sneak_loop",
+     "loop": true,
+     "notes": "",
+     "tags": [
+      "locomotion"
+     ]
+    },
+    {
+     "id": "rifle_run_loop",
+     "loop": true,
+     "notes": "",
+     "tags": [
+      "locomotion"
+     ]
+    },
+    {
+     "id": "cold_walk_loop",
+     "loop": true,
+     "notes": "Hunched, arms tight, short steps - freezing.",
+     "tags": [
+      "locomotion"
+     ]
+    },
+    {
+     "id": "cover_enter",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "cover"
+     ]
+    },
+    {
+     "id": "cover_idle",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "cover"
+     ]
+    },
+    {
+     "id": "cover_peek",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "cover"
+     ]
+    },
+    {
+     "id": "aim_idle",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "weapon"
+     ]
+    },
+    {
+     "id": "fire",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "weapon",
+      "hit_event"
+     ]
+    },
+    {
+     "id": "reload",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "weapon"
+     ]
+    },
+    {
+     "id": "takedown_rear",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "melee",
+      "hit_event"
+     ]
+    },
+    {
+     "id": "vault_low",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "traversal"
+     ]
+    },
+    {
+     "id": "climb_ledge",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "traversal"
+     ]
+    },
+    {
+     "id": "slip_recover",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "traversal"
+     ]
+    },
+    {
+     "id": "interact_button",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "interact"
+     ]
+    },
+    {
+     "id": "interact_pickup",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "interact"
+     ]
+    },
+    {
+     "id": "interact_door",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "interact"
+     ]
+    },
+    {
+     "id": "mech_enter",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "interact"
+     ]
+    },
+    {
+     "id": "cine_abandoned",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "cinematic"
+     ]
+    },
+    {
+     "id": "cine_radio",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "cinematic"
+     ]
+    },
+    {
+     "id": "cine_final",
+     "loop": false,
+     "notes": "",
+     "tags": [
+      "cinematic"
+     ]
+    }
+   ]
+  }
+ ]
+}

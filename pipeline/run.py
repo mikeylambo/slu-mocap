@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse, time, traceback
 from pathlib import Path
 import numpy as np
-from . import skeleton as S, ingest, calibrate, keypoints, triangulate as TR, cleanup, export, qc
+from . import skeleton as S, ingest, calibrate, keypoints, triangulate as TR, cleanup, export, qc, face
 from .common import (Take, PipelineError, code_hash, file_hash, game_config, log, move_info,
                      read_json, root_dirs, write_json)
 from . import solve as SV
@@ -85,6 +85,7 @@ def process_take(take: Take, d: dict, force=False, device="cuda") -> dict | None
         else:
             cam = _guess_cam(meta, kp[ref])
             X, conf = TR.lift_single_view(*samples[ref], cam)
+    conf_raw = conf.copy()
     X, conf, filled = TR.fill_gaps(X, conf, fps)
     X, _ = TR.world_align(X, conf)
     Pj, W = S.joints_from_keypoints(X, conf)
@@ -92,8 +93,7 @@ def process_take(take: Take, d: dict, force=False, device="cuda") -> dict | None
     clip["src_index"] = clip["src_index"] + frame0
     q.update(sync_method=sync["method"], chirp_check_ms=sync["chirp_check_ms"])
     Pprev, _ = SV.fk(clip.get("root_track", clip["root"]), clip["quats"], clip["lengths"], clip["offsets"])
-    lowconf = np.stack([s[1] for s in samples.values()]).min(0)
-    q = qc.metrics(Pprev, lowconf, reproj, single, q, cfg)
+    q = qc.metrics(Pprev, conf_raw, reproj, single, q, cfg)
     meta = export.run(clip, out_dir, take.id, cfg, info, q)
     qc.contact_sheet(take.views[ref]["video"], clip["src_index"], Pprev, out_dir / f"{take.id}.contact.mp4",
                      fps=fps, hits=set(clip["hit_frames"]), contacts=clip["contacts"],
@@ -131,6 +131,7 @@ def run_all(root, force=False, only=None, device="cuda") -> int:
             failed += 1
             log("ERROR", f"{t.id}\n{traceback.format_exc()}")
             write_json(d["out"] / "_errors" / f"{t.id}.json", {"error": traceback.format_exc()})
+    face.run(d["inbox"], d["out"])
     qc.report(d["out"])
     log("done", f"{done} processed, {failed} failed, {len(takes)} takes in inbox -> {d['out']}/qc_report.html")
     return failed

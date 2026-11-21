@@ -1,0 +1,6 @@
+# Mixamo rig. Canonical names already are Mixamo names; only the prefix differs.
+name: mixamo
+prefix: "mixamorig:"
+model: ~                 # optional: path to a Mixamo character (.fbx/.glb) to bake onto
+root_bone: ~
+map: {}                  # canonical -> target overrides; unlisted bones use prefix + canonical name

@@ -1,0 +1,47 @@
+<!doctype html><html><head><meta charset="utf-8"><title>SLU Review</title>
+<style>
+:root{--bg:#0b0c0f;--card:#14161b;--line:#23262e;--fg:#ececf1;--mute:#8a8f9c;--g:#2fd27a;--a:#ffb547;--r:#ff5c5c;--acc:#7cc4ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 -apple-system,BlinkMacSystemFont,Inter,sans-serif}
+header{position:sticky;top:0;z-index:2;display:flex;gap:16px;align-items:center;padding:16px 28px;background:rgba(11,12,15,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+h1{font-size:15px;letter-spacing:.14em;margin:0;font-weight:600}h1 b{color:var(--acc)}
+.tabs button,.filters button{background:none;border:1px solid var(--line);color:var(--mute);padding:6px 12px;border-radius:99px;cursor:pointer;font:inherit}
+.tabs button.on,.filters button.on{color:var(--fg);border-color:var(--fg)}.sp{flex:1}.root{color:var(--mute);font-size:12px}
+main{padding:24px 28px}.move{margin:0 0 30px}.move h2{font-size:13px;font-weight:500;color:var(--mute);letter-spacing:.08em;text-transform:uppercase;margin:0 0 12px}
+.row{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:border-color .2s}
+.card.best{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}.card.retake{opacity:.45}
+video{width:100%;display:block;background:#000;aspect-ratio:2.4/1}
+.meta{display:flex;align-items:center;gap:10px;padding:12px 14px 6px}.dot{width:9px;height:9px;border-radius:50%}
+.id{font-weight:600}.badges{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px}.b{font-size:11px;color:var(--mute);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+.b.bad{color:var(--r);border-color:#5a2a2a}.acts{display:flex;gap:8px;padding:0 14px 14px}
+.acts button{flex:1;padding:9px;border-radius:9px;border:1px solid var(--line);background:#1b1e25;color:var(--fg);font:inherit;cursor:pointer}
+.acts button:hover{border-color:var(--mute)}.acts .best{background:var(--acc);color:#04121f;border-color:var(--acc);font-weight:600}
+.job{font-size:12px;color:var(--acc);padding:0 14px 12px}.empty{color:var(--mute);padding:80px;text-align:center}
+</style></head><body>
+<header><h1>SLU <b>REVIEW</b></h1><div class="tabs" id="tabs"></div><div class="filters" id="filters"></div><div class="sp"></div><div class="root" id="root"></div></header>
+<main id="main"></main>
+<script>
+let data={takes:[]},last='',game=null,filter='all';const T={approved:'Approved',retake:'Retake',best:'★ Best',new:''};
+const col=g=>({green:'var(--g)',amber:'var(--a)',red:'var(--r)'}[g]||'#666');
+async function load(){const t=await (await fetch('/api/takes')).text();if(t===last)return;last=t;data=JSON.parse(t);render()}
+async function set(id,status){await fetch('/api',{method:'POST',body:JSON.stringify({id,status})});load()}
+function badge(k,v,bad){return v==null?'':`<span class="b ${bad?'bad':''}">${k} ${v}</span>`}
+function render(){
+ const games=[...new Set(data.takes.map(t=>t.game))];game=game&&games.includes(game)?game:games[0];
+ document.getElementById('root').textContent=data.root;
+ tabs.innerHTML=games.map(g=>`<button class="${g==game?'on':''}" onclick="game='${g}';render()">${g.replace('_',' ')}</button>`).join('');
+ filters.innerHTML=['all','new','best','retake'].map(f=>`<button class="${f==filter?'on':''}" onclick="filter='${f}';render()">${f}</button>`).join('');
+ const ts=data.takes.filter(t=>t.game==game&&(filter=='all'||t.status==filter));
+ if(!ts.length){main.innerHTML='<div class="empty">No takes yet. Shoot, then Run all in Colab.</div>';return}
+ const moves={};ts.forEach(t=>(moves[t.move]=moves[t.move]||[]).push(t));
+ const keep=new Map([...document.querySelectorAll('video')].map(v=>[v.dataset.id,v.currentTime]));
+ main.innerHTML=Object.entries(moves).map(([m,list])=>`<section class="move"><h2>${m}</h2><div class="row">${list.map(t=>{const q=t.qc||{};return`
+ <div class="card ${t.status}"><video data-id="${t.id}" src="${t.video}" muted loop autoplay playsinline controls></video>
+ <div class="meta"><span class="dot" style="background:${col(q.grade)}"></span><span class="id">take ${t.id.slice(-3)}</span>${T[t.status]?`<span class="b">${T[t.status]}</span>`:''}<div class="sp"></div><span class="b">${t.frames}f${t.loop?' · loop':''}${t.hits.length?' · hits '+t.hits.join(','):''}</span></div>
+ <div class="badges">${badge('slide',q.foot_slide_cm?.toFixed(1)+'cm',q.foot_slide_cm>2)}${badge('jitter',q.jitter_mm?.toFixed(1)+'mm',q.jitter_mm>3)}${badge('low-conf',q.low_conf_pct==null?null:q.low_conf_pct.toFixed(0)+'%',q.low_conf_pct>10)}${badge('reproj',q.reproj_px==null?null:q.reproj_px.toFixed(1)+'px',q.reproj_px>6)}${q.single_view?badge('','SINGLE VIEW',true):''}</div>
+ <div class="acts"><button onclick="set('${t.id}','retake')">Retake</button><button onclick="set('${t.id}','approved')">Approve</button><button class="best" onclick="set('${t.id}','best')">★ Best take</button></div>
+ ${t.job?`<div class="job">${t.job}</div>`:''}</div>`}).join('')}</div></section>`).join('');
+ document.querySelectorAll('video').forEach(v=>{if(keep.has(v.dataset.id))v.currentTime=keep.get(v.dataset.id)});
+}
+load();setInterval(load,4000);
+</script></body></html>

@@ -1,0 +1,11 @@
+# Meshy auto-rig (humanoid). Bone names vary slightly between Meshy versions, so unmapped
+# bones are auto-matched by name (see blender/retarget.py: automap). Override here if needed.
+name: meshy
+model: ~                 # set per game (config/games/kairos.yaml sprites.model) or here
+root_bone: ~
+map:
+  Spine: Spine
+  Spine1: Spine01
+  Spine2: Spine02
+  Neck: neck
+  Head: Head

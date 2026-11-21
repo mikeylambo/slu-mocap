@@ -97,7 +97,9 @@ def resample(kp: dict, times_s: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     i1 = np.clip(i0 + 1, 0, T - 1)
     a = np.clip(f - i0, 0, 1)[:, None]
     P = kp["kp"][i0] * (1 - a[..., None]) + kp["kp"][i1] * a[..., None]
-    S = np.minimum(kp["score"][i0], kp["score"][i1])
+    a1 = a[:, 0]
+    S = np.where((a1 < 1e-3)[:, None], kp["score"][i0],
+                 np.where((a1 > 1 - 1e-3)[:, None], kp["score"][i1], np.minimum(kp["score"][i0], kp["score"][i1])))
     out = (f < -0.5) | (f > T - 0.5)
     S[out] = 0
     return P, S

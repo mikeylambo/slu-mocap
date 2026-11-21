@@ -1,0 +1,36 @@
+# Godot SkeletonProfileHumanoid names (use when your Godot character is already retargeted
+# to the humanoid profile; Godot also auto-maps the plain Mixamo export).
+name: godot_humanoid
+model: ~
+root_bone: Root
+map:
+  Hips: Hips
+  Spine: Spine
+  Spine1: Chest
+  Spine2: UpperChest
+  Neck: Neck
+  Head: Head
+  LeftShoulder: LeftShoulder
+  LeftArm: LeftUpperArm
+  LeftForeArm: LeftLowerArm
+  LeftHand: LeftHand
+  LeftUpLeg: LeftUpperLeg
+  LeftLeg: LeftLowerLeg
+  LeftFoot: LeftFoot
+  LeftToeBase: LeftToes
+  LeftHandThumb1: LeftThumbMetacarpal
+  LeftHandThumb2: LeftThumbProximal
+  LeftHandThumb3: LeftThumbDistal
+  LeftHandIndex1: LeftIndexProximal
+  LeftHandIndex2: LeftIndexIntermediate
+  LeftHandIndex3: LeftIndexDistal
+  LeftHandMiddle1: LeftMiddleProximal
+  LeftHandMiddle2: LeftMiddleIntermediate
+  LeftHandMiddle3: LeftMiddleDistal
+  LeftHandRing1: LeftRingProximal
+  LeftHandRing2: LeftRingIntermediate
+  LeftHandRing3: LeftRingDistal
+  LeftHandPinky1: LeftLittleProximal
+  LeftHandPinky2: LeftLittleIntermediate
+  LeftHandPinky3: LeftLittleDistal
+mirror: true             # Right* entries are generated from Left*

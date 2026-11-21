@@ -1,0 +1,6 @@
+numpy
+scipy
+opencv-contrib-python-headless
+pyyaml
+rtmlib          # Colab / GPU stage (2D keypoints)
+onnxruntime-gpu # or onnxruntime on CPU

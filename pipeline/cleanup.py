@@ -270,7 +270,7 @@ def run(Pj, W, fps, cfg, move, info, aux=None):
         qc["trim"] = [sl.start, sl.stop]
     con = foot_contacts(P, fps, cfg)
     qc["foot_slide_raw_cm"] = foot_slide_cm(P, con, fps)[0]
-    if cfg["contacts"]["foot_lock"]:
+    if info.get("foot_lock", cfg["contacts"]["foot_lock"]):
         P = foot_lock(P, con, L, fps)
         re = SV.solve(P, np.ones(P.shape[:2]), fps, aux=None, lengths=L, offsets_=off)
         clip["quats"], clip["root"] = re["quats"], re["root"]
