@@ -1,0 +1,95 @@
+# NO EXTRACTION
+# Fields: loop (bool), root_motion (extract|in_place, default from game config),
+# tags (list), notes (shown on the phone), hits (impact events -> hit_frame), foot_lock (bool)
+game: no_extraction
+moves:
+  crouch_idle:
+    loop: false
+    tags:
+    - stealth
+    - idle
+    root_motion: in_place
+  crouch_walk_loop:
+    loop: true
+    tags: &id001
+    - locomotion
+  sneak_loop:
+    loop: true
+    tags: *id001
+  rifle_run_loop:
+    loop: true
+    tags: *id001
+  cold_walk_loop:
+    loop: true
+    tags: *id001
+    notes: Hunched, arms tight, short steps - freezing.
+  cover_enter:
+    loop: false
+    tags: &id002
+    - cover
+  cover_idle:
+    loop: false
+    tags: *id002
+    root_motion: in_place
+  cover_peek:
+    loop: false
+    tags: *id002
+  aim_idle:
+    loop: false
+    tags: &id003
+    - weapon
+    root_motion: in_place
+  fire:
+    loop: false
+    tags:
+    - weapon
+    - hit_event
+    root_motion: in_place
+    hits: 1
+  reload:
+    loop: false
+    tags: *id003
+    root_motion: in_place
+  takedown_rear:
+    loop: false
+    tags:
+    - melee
+    - hit_event
+    hits: 1
+  vault_low:
+    loop: false
+    tags: &id004
+    - traversal
+  climb_ledge:
+    loop: false
+    tags: *id004
+  slip_recover:
+    loop: false
+    tags: *id004
+  interact_button:
+    loop: false
+    tags: &id005
+    - interact
+  interact_pickup:
+    loop: false
+    tags: *id005
+  interact_door:
+    loop: false
+    tags: *id005
+  mech_enter:
+    loop: false
+    tags:
+    - interact
+  cine_abandoned:
+    loop: false
+    tags: &id006
+    - cinematic
+    root_motion: extract
+  cine_radio:
+    loop: false
+    tags: *id006
+    root_motion: extract
+  cine_final:
+    loop: false
+    tags: *id006
+    root_motion: extract

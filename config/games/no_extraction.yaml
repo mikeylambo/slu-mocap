@@ -1,0 +1,7 @@
+# NO EXTRACTION - 3D third-person (Godot / Unreal)
+title: NO EXTRACTION
+root_motion: extract
+rigs: [mixamo, godot_humanoid, ue5_manny]
+targets:
+  godot: ~/Projects/no-extraction/anims        # res://anims/ in the Godot project
+  unreal: ~/Projects/NoExtraction/Import/Anims

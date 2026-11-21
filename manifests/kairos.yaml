@@ -1,0 +1,115 @@
+# KAIROS
+# Fields: loop (bool), root_motion (extract|in_place, default from game config),
+# tags (list), notes (shown on the phone), hits (impact events -> hit_frame), foot_lock (bool)
+game: kairos
+moves:
+  powerup_charge:
+    loop: false
+    tags: &id001
+    - power
+  powerup_release:
+    loop: false
+    tags: *id001
+  stance_loop:
+    loop: true
+    tags:
+    - idle
+    notes: Fighting stance bounce, 2-3 cycles.
+  jab:
+    loop: false
+    tags: &id002
+    - attack
+    hits: 1
+  cross:
+    loop: false
+    tags: *id002
+    hits: 1
+  hook:
+    loop: false
+    tags: *id002
+    hits: 1
+  kick_front:
+    loop: false
+    tags: &id003
+    - attack
+    hits: 1
+  kick_round:
+    loop: false
+    tags: *id003
+    hits: 1
+  kick_spin:
+    loop: false
+    tags: *id003
+    hits: 1
+  combo_3:
+    loop: false
+    tags:
+    - attack
+    hits: 3
+  combo_5_launcher:
+    loop: false
+    tags:
+    - attack
+    hits: 5
+  dash:
+    loop: false
+    tags: &id004
+    - movement
+  dash_stop:
+    loop: false
+    tags: *id004
+  fly_hover_loop:
+    loop: true
+    tags: &id005
+    - flight
+    notes: Perform on a stool or with a wide stance; feet are not locked.
+    foot_lock: false
+  fly_forward_loop:
+    loop: true
+    tags: *id005
+    notes: Perform on a stool or with a wide stance; feet are not locked.
+    foot_lock: false
+  beam_charge:
+    loop: false
+    tags:
+    - power
+  beam_fire:
+    loop: false
+    tags:
+    - power
+    - hit_event
+    hits: 1
+  instant_transmission:
+    loop: false
+    tags:
+    - power
+    notes: Two fingers to forehead, vanish pose.
+  ki_volley:
+    loop: false
+    tags:
+    - power
+    - hit_event
+    hits: 4
+  block:
+    loop: false
+    tags:
+    - defense
+  parry:
+    loop: false
+    tags:
+    - defense
+    - hit_event
+    hits: 1
+  victory:
+    loop: false
+    tags: &id006
+    - cinematic
+  fade_ending:
+    loop: false
+    tags: *id006
+  taunt_a:
+    loop: false
+    tags: *id006
+  taunt_b:
+    loop: false
+    tags: *id006

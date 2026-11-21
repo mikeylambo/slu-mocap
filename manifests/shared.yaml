@@ -1,0 +1,57 @@
+# Shared moves - merged into every game
+# Fields: loop (bool), root_motion (extract|in_place, default from game config),
+# tags (list), notes (shown on the phone), hits (impact events -> hit_frame), foot_lock (bool)
+game: null
+moves:
+  idle_loop:
+    loop: true
+    tags:
+    - idle
+    root_motion: in_place
+    notes: Relaxed weight shifts, 6-8 s.
+  walk_loop:
+    loop: true
+    tags: &id001
+    - locomotion
+  run_loop:
+    loop: true
+    tags: *id001
+  turn_180:
+    loop: false
+    tags:
+    - locomotion
+    notes: Plant and pivot over the left foot.
+  jump_takeoff:
+    loop: false
+    tags: &id002
+    - jump
+  jump_air:
+    loop: false
+    tags: *id002
+    notes: Record a full jump; trim to the airborne section in Review.
+  jump_land:
+    loop: false
+    tags: *id002
+  hit_light:
+    loop: false
+    tags: &id003
+    - reaction
+    root_motion: in_place
+  hit_heavy:
+    loop: false
+    tags: *id003
+    root_motion: in_place
+  hit_back:
+    loop: false
+    tags: *id003
+    root_motion: in_place
+  knockdown_getup:
+    loop: false
+    tags: &id004
+    - reaction
+  death_a:
+    loop: false
+    tags: *id004
+  death_b:
+    loop: false
+    tags: *id004

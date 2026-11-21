@@ -1,0 +1,17 @@
+# Defaults for every game; config/games/<game>.yaml overrides any key.
+fps: 60
+root_motion: extract          # extract | in_place  (manifest entry can override per move)
+trim: {enabled: true, still_mps: 0.25, pad_s: 0.25}
+one_euro:                     # min_cutoff Hz (lower = smoother when slow), beta (higher = less lag when fast)
+  torso:       {min_cutoff: 0.8, beta: 0.15}
+  extremities: {min_cutoff: 1.6, beta: 0.6}
+contacts: {foot_lock: true, height_m: 0.045, speed_mps: 0.35, min_frames: 4}
+stylize: {enabled: false, speed: 1.0, snap: 0.0}
+qc:                           # thresholds for the green/amber/red badges
+  max_foot_slide_cm: 2.0
+  max_jitter_mm: 3.0
+  max_low_conf_pct: 10
+  max_reproj_px: 6.0
+export: {bvh: true, fbx: true}
+targets: {}                   # where approved files are copied (see game files)
+rigs: [mixamo]                # config/rigs/*.yaml to retarget to on approval

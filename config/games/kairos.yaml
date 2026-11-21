@@ -1,0 +1,20 @@
+# KAIROS - 2D fighter, mocap rendered to sprites
+title: KAIROS
+root_motion: in_place
+stylize: {enabled: true, speed: 1.15, snap: 0.35}   # anticipation -> snap, global x1.15
+one_euro:
+  extremities: {min_cutoff: 1.8, beta: 0.8}          # keep strikes crisp
+rigs: [meshy]
+sprites:
+  model: ~/Projects/kairos/art/zenith/zenith_rigged.glb   # Meshy auto-rig of Zenith
+  rig: meshy
+  frame_step: 2              # every 2nd frame (60 -> 30 fps sprite anim)
+  cell_px: 256
+  pixels_per_metre: 120
+  camera: side               # orthographic, facing the character's left side
+  toon: true
+  outline_px: 2
+  facing: right
+targets:
+  sprites: ~/Projects/kairos/web/assets/sprites
+  godot: ~
