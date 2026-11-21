@@ -122,5 +122,33 @@ def test_bvh_roundtrip():
     assert e < 1e-3, e
 
 
+
+def test_four_views_mixed_fps():
+    """Leader+Follower 60 fps, iPad + Mac 30 fps (resampled onto the 60 fps timeline)."""
+    from pipeline import keypoints as KP
+    root, Q, P, G = walk(seconds=3)
+    K3 = keypoints_from_joints(P, G)
+    tgt = [0, 0.9, 2.6]
+    rigs = {"leader": look_at([0.2, 1.1, 7.5], tgt), "follower": look_at([5.0, 1.0, 2.0], tgt),
+            "cam3": look_at([-3.5, 2.6, 6.0], tgt), "cam4": look_at([-3.0, 1.2, -1.5], tgt)}
+    kps, cams = {}, {}
+    for r, cam in rigs.items():
+        p = project(cam, K3) + RNG.normal(0, 1.5, K3.shape[:2] + (2,))
+        c = np.full(K3.shape[:2], 0.9)
+        if r in ("cam3", "cam4"):                       # 30 fps device
+            d = {"kp": p[::2], "score": c[::2], "fps": 30.0}
+            p, c = KP.resample(d, np.arange(len(K3)) / 60)
+        kps[r] = (p, c)
+        cams[r] = relative_to(rigs["leader"], cam)
+    # occlude the left arm in the two main views half the time: extra views must recover it
+    for r in ("leader", "follower"):
+        kps[r][1][::2, [S.LELB, S.LWRI]] = 0.0
+    X, conf, err = TR.triangulate(cams, kps)
+    Xt = (K3 @ rigs["leader"]["R"].T + rigs["leader"]["t"])     # GT in leader camera coords
+    e = np.nanmedian(np.linalg.norm(X[:, :23] - Xt[:, :23], axis=-1)) * 1000
+    print("4-view median 3D error mm", round(e, 1))
+    assert e < 15 and np.isfinite(X[::2, S.LWRI]).all()
+
+
 if __name__ == "__main__":
-    test_walk_two_view(); test_spin_stable(); test_kairos_stylize_hits(); test_bvh_roundtrip(); print("ALL OK")
+    test_walk_two_view(); test_spin_stable(); test_kairos_stylize_hits(); test_bvh_roundtrip(); test_four_views_mixed_fps(); print("ALL OK")

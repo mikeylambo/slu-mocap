@@ -1,15 +1,24 @@
 import Foundation
 import MultipeerConnectivity
-import UIKit
 
 /// Leader/Follower pairing over MultipeerConnectivity with an NTP-style clock handshake.
 /// sharedTime = Leader host clock. Follower keeps `offset` so leaderTime = localTime + offset.
-enum Role: String, Codable, CaseIterable { case leader, follower }
+enum Role: String, Codable, CaseIterable {
+    case leader, follower, cam3, cam4
+    var label: String {
+        switch self {
+        case .leader: return "LEADER · FRONT"
+        case .follower: return "FOLLOWER · SIDE"
+        case .cam3: return "CAM 3 · HIGH CORNER"
+        case .cam4: return "CAM 4"
+        }
+    }
+}
 
 enum Msg: Codable {
-    case ping(t1: Double)
+    case ping(t1: Double, from: String)
     case pong(t1: Double, t2: Double)
-    case arm(game: String, move: String, take: Int, setupId: String, calibration: Bool)
+    case arm(game: String, move: String, take: Int, setupId: String, calibration: Bool, fps: Double)
     case start(atShared: Double)
     case stop(atShared: Double)
     case markBad(takeId: String)
@@ -20,12 +29,13 @@ final class PeerSync: NSObject, ObservableObject {
     static let service = "slu-mocap"
     @Published var connected = false
     @Published var peerName: String?
+    @Published var peerCount = 0
     @Published var offset: Double = 0          // follower: leaderClock - localClock
     @Published var rttMs: Double = 0
     @Published var syncQuality: String = "-"
     var onMessage: ((Msg) -> Void)?
 
-    private let me = MCPeerID(displayName: UIDevice.current.name)
+    private let me = MCPeerID(displayName: Platform.deviceName)
     private lazy var session = MCSession(peer: me, securityIdentity: nil, encryptionPreference: .none)
     private var adv: MCNearbyServiceAdvertiser?
     private var browser: MCNearbyServiceBrowser?
@@ -42,14 +52,14 @@ final class PeerSync: NSObject, ObservableObject {
             browser?.delegate = self
             browser?.startBrowsingForPeers()
         } else {
-            adv = MCNearbyServiceAdvertiser(peer: me, discoveryInfo: ["role": "follower"], serviceType: Self.service)
+            adv = MCNearbyServiceAdvertiser(peer: me, discoveryInfo: ["role": role.rawValue], serviceType: Self.service)
             adv?.delegate = self
             adv?.startAdvertisingPeer()
         }
     }
 
     func stop() {
-        adv?.stopAdvertisingPeer(); browser?.stopBrowsingForPeers(); session.disconnect()
+        adv?.stopAdvertisingPeer(); browser?.stopBrowsingForPeers(); session.disconnect(); leaderPeer = nil
         timer?.invalidate(); samples = []
     }
 
@@ -57,9 +67,12 @@ final class PeerSync: NSObject, ObservableObject {
     var sharedNow: Double { HostClock.now + (role == .leader ? 0 : offset) }
     func toLocal(_ shared: Double) -> Double { shared - (role == .leader ? 0 : offset) }
 
-    func send(_ m: Msg, reliable: Bool = true) {
-        guard !session.connectedPeers.isEmpty, let d = try? JSONEncoder().encode(m) else { return }
-        try? session.send(d, toPeers: session.connectedPeers, with: reliable ? .reliable : .unreliable)
+    private var leaderPeer: MCPeerID?
+
+    func send(_ m: Msg, reliable: Bool = true, to peers: [MCPeerID]? = nil) {
+        let targets = peers ?? session.connectedPeers
+        guard !targets.isEmpty, let d = try? JSONEncoder().encode(m) else { return }
+        try? session.send(d, toPeers: targets, with: reliable ? .reliable : .unreliable)
     }
 
     /// Follower runs bursts of pings; keeps the 30% lowest-RTT samples (NTP min-filter).
@@ -69,15 +82,18 @@ final class PeerSync: NSObject, ObservableObject {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] t in
             guard let self else { return }
-            self.send(.ping(t1: HostClock.now), reliable: false)
+            // ping only the Leader: with 3-4 devices the session is a mesh
+            guard let l = self.leaderPeer else { return }
+            self.send(.ping(t1: HostClock.now, from: self.me.displayName), reliable: false, to: [l])
             if self.samples.count > 120 { self.samples.removeFirst(40) }
         }
     }
 
-    private func handle(_ m: Msg) {
+    private func handle(_ m: Msg, from peer: MCPeerID) {
         switch m {
-        case .ping(let t1):
-            send(.pong(t1: t1, t2: HostClock.now), reliable: false)
+        case .ping(let t1, _):
+            guard role == .leader else { return }
+            send(.pong(t1: t1, t2: HostClock.now), reliable: false, to: [peer])
         case .pong(let t1, let t2):
             let t3 = HostClock.now
             let rtt = t3 - t1
@@ -101,11 +117,16 @@ extension PeerSync: MCSessionDelegate {
         DispatchQueue.main.async {
             self.connected = state == .connected
             self.peerName = state == .connected ? peer.displayName : nil
-            if state == .connected { self.beginHandshake() }
+            self.peerCount = s.connectedPeers.count
+            if state == .connected, self.role != .leader, self.leaderPeer == nil || peer == self.leaderPeer {
+                self.leaderPeer = peer      // the inviting Leader
+                self.beginHandshake()
+            }
+            if state == .notConnected, peer == self.leaderPeer { self.leaderPeer = nil }
         }
     }
     func session(_ s: MCSession, didReceive data: Data, fromPeer p: MCPeerID) {
-        if let m = try? JSONDecoder().decode(Msg.self, from: data) { handle(m) }
+        if let m = try? JSONDecoder().decode(Msg.self, from: data) { handle(m, from: p) }
     }
     func session(_ s: MCSession, didReceive stream: InputStream, withName n: String, fromPeer p: MCPeerID) {}
     func session(_ s: MCSession, didStartReceivingResourceWithName n: String, fromPeer p: MCPeerID, with progress: Progress) {}
@@ -114,9 +135,13 @@ extension PeerSync: MCSessionDelegate {
 
 extension PeerSync: MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate {
     func advertiser(_ a: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer p: MCPeerID, withContext c: Data?,
-                    invitationHandler: @escaping (Bool, MCSession?) -> Void) { invitationHandler(true, session) }
+                    invitationHandler: @escaping (Bool, MCSession?) -> Void) {
+        let fromLeader = c.flatMap { String(data: $0, encoding: .utf8) } == "slu-leader"
+        if fromLeader { DispatchQueue.main.async { self.leaderPeer = p } }
+        invitationHandler(fromLeader, session)
+    }
     func browser(_ b: MCNearbyServiceBrowser, foundPeer p: MCPeerID, withDiscoveryInfo info: [String: String]?) {
-        b.invitePeer(p, to: session, withContext: nil, timeout: 10)
+        b.invitePeer(p, to: session, withContext: "slu-leader".data(using: .utf8), timeout: 10)
     }
     func browser(_ b: MCNearbyServiceBrowser, lostPeer p: MCPeerID) {}
 }

@@ -35,10 +35,11 @@ private struct TopBar: View {
     @Binding var showSettings: Bool
     var body: some View {
         HStack(spacing: 10) {
-            Pill(text: m.role == .leader ? "LEADER · FRONT" : "FOLLOWER · SIDE", color: .white)
-            Pill(text: m.peers.connected ? "PAIRED \(m.peers.syncQuality)" : "PAIRING…",
+            Pill(text: m.role.label, color: .white)
+            Pill(text: m.peers.connected ? (m.role == .leader ? "\(m.peers.peerCount) CAMS PAIRED" : "PAIRED \(m.peers.syncQuality)") : "PAIRING…",
                  color: m.peers.connected ? .green : .orange)
             Pill(text: m.cam.locked ? "LOCKED" : "TAP TO LOCK", color: m.cam.locked ? .green : .yellow)
+            if m.cam.fps >= 120 { Pill(text: "\(Int(m.cam.fps)) FPS", color: .pink) }
             Spacer()
             Button { showSettings = true } label: { Image(systemName: "gearshape.fill").font(.title3) }
         }
@@ -89,9 +90,15 @@ private struct MovePicker: View {
                     .buttonStyle(Glass())
                 Menu {
                     ForEach(m.store.games.first { $0.id == m.game }?.moves ?? []) { mv in
-                        Button(mv.id) { m.move = mv.id } }
+                        Button(mv.id) { m.move = mv.id; m.slowMoOverride = nil } }
                 } label: { Text(m.calibrationMode ? "CALIBRATION" : m.move).font(.title3.weight(.semibold)).lineLimit(1) }
                     .buttonStyle(Glass()).disabled(m.calibrationMode)
+            }
+            if !m.calibrationMode {
+                Button { m.slowMoOverride = !m.slowMo } label: {
+                    Label(m.slowMo ? "Slow-mo 240 · strikes" : "Normal 60 fps", systemImage: m.slowMo ? "bolt.fill" : "figure.walk")
+                        .font(.caption.weight(.semibold))
+                }.buttonStyle(Glass()).tint(m.slowMo ? .pink : .white)
             }
             if let n = m.moveInfo?.notes, !n.isEmpty, !m.calibrationMode {
                 Text(n).font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
@@ -112,7 +119,7 @@ private struct RecordButton: View {
                     .animation(.spring(response: 0.3, dampingFraction: 0.7), value: recording)
             }
         }
-        .sensoryFeedback(.impact(weight: .heavy), trigger: recording)
+        .haptic(recording)
     }
 }
 
@@ -133,12 +140,14 @@ private struct SettingsSheet: View {
     @Binding var pickInbox: Bool
     @Environment(\.dismiss) var dismiss
     var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
                 Section("Role") {
-                    Picker("This phone", selection: $m.role) {
+                    Picker("This device", selection: $m.role) {
                         Text("Leader (16e · front)").tag(Role.leader)
                         Text("Follower (11 · side)").tag(Role.follower)
+                        Text("Cam 3 (iPad · high corner)").tag(Role.cam3)
+                        Text("Cam 4 (Mac / extra)").tag(Role.cam4)
                     }.pickerStyle(.inline)
                 }
                 Section("Google Drive inbox") {
@@ -162,6 +171,13 @@ private struct SettingsSheet: View {
             .navigationTitle("SLU Capture")
             .toolbar { Button("Done") { dismiss() } }
         }
+        .navigationViewStyle(.stack)
+    }
+}
+
+extension View {
+    @ViewBuilder func haptic(_ trigger: Bool) -> some View {
+        if #available(iOS 17.0, *) { sensoryFeedback(.impact(weight: .heavy), trigger: trigger) } else { self }
     }
 }
 

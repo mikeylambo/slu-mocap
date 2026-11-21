@@ -25,9 +25,11 @@ final class ChirpPlayer {
     }
 
     func play(atHost hostSeconds: Double) {
+        #if os(iOS)
         try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .videoRecording,
                                                          options: [.defaultToSpeaker, .mixWithOthers])
         try? AVAudioSession.sharedInstance().setActive(true)
+        #endif
         if !engine.isRunning { try? engine.start() }
         guard let b = buffer else { return }
         let when = AVAudioTime(hostTime: AVAudioTime.hostTime(forSeconds: hostSeconds))

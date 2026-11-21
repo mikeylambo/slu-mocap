@@ -163,7 +163,10 @@ def ingest_legacy(src: Path, inbox: Path, review: Path, game_hint: str | None = 
                 others[n].remove(best)
         text = model.transcribe(str(clip), language="en", fp16=False,
                                 clip_timestamps=[0, 12])["text"].lower()
-        game, move = match_move(text, manifests, game_hint)
+        if "calibrat" in text:
+            game, move = "_calib", "calib"
+        else:
+            game, move = match_move(text, manifests, game_hint)
         if not move:
             dst = review / clip.stem
             dst.mkdir(parents=True, exist_ok=True)

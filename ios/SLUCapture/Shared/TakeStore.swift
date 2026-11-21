@@ -1,5 +1,4 @@
 import Foundation
-import UIKit
 
 struct Move: Codable, Identifiable, Hashable { let id: String; let loop: Bool; let notes: String; let tags: [String] }
 struct Game: Codable, Identifiable, Hashable { let id: String; let moves: [Move] }
@@ -53,7 +52,7 @@ final class TakeStore: ObservableObject {
     // MARK: Drive inbox (security-scoped folder bookmark; pick Google Drive > SLU_Mocap > inbox once)
     private var inboxURL: URL?
     func setInbox(_ url: URL) {
-        guard url.startAccessingSecurityScopedResource() else { return }
+        _ = url.startAccessingSecurityScopedResource()   // false (and unneeded) outside a sandbox
         if let b = try? url.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil) {
             d.set(b, forKey: "inboxBookmark")
         }
@@ -63,7 +62,8 @@ final class TakeStore: ObservableObject {
     private func restoreInbox() {
         guard let b = d.data(forKey: "inboxBookmark") else { return }
         var stale = false
-        if let u = try? URL(resolvingBookmarkData: b, bookmarkDataIsStale: &stale), u.startAccessingSecurityScopedResource() {
+        if let u = try? URL(resolvingBookmarkData: b, bookmarkDataIsStale: &stale) {
+            _ = u.startAccessingSecurityScopedResource()
             inboxURL = u; inboxName = u.lastPathComponent
         }
     }

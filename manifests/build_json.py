@@ -7,5 +7,7 @@ from pipeline.common import load_manifests
 m = load_manifests()
 out = {"version": 1, "games": [{"id": g, "moves": [{"id": k, "loop": bool(v.get("loop")), "notes": v.get("notes", ""),
        "tags": v.get("tags", [])} for k, v in mv.items()]} for g, mv in m.items()]}
-(Path(__file__).parent / "manifests.json").write_text(json.dumps(out, indent=1))
+txt = json.dumps(out, indent=1)
+(Path(__file__).parent / "manifests.json").write_text(txt)
+(Path(__file__).resolve().parents[1] / "ios/SLUCapture/Shared/manifests.json").write_text(txt)   # bundled fallback
 print("wrote manifests.json")

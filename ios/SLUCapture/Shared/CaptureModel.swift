@@ -19,6 +19,15 @@ final class CaptureModel: ObservableObject {
     @Published var lastTakeId: String?
     @Published var banner: String?
     @Published var faceMode = false
+    /// Slow-mo (240 fps) for strikes: auto for moves tagged attack/hit_event, overridable.
+    @Published var slowMoOverride: Bool? = nil
+    var slowMo: Bool {
+        if calibrationMode { return false }
+        if let o = slowMoOverride { return o }
+        let tags = Set(moveInfo?.tags ?? [])
+        return !tags.isDisjoint(with: ["attack", "hit_event"])
+    }
+    var wantFPS: Double { slowMo ? 240 : 60 }
 
     let peers = PeerSync()
     let cam = CaptureEngine()
@@ -29,7 +38,8 @@ final class CaptureModel: ObservableObject {
     private var timer: Timer?
     private var bag = Set<AnyCancellable>()
 
-    init() {
+    init(defaultRole: Role = .leader) {
+        if UserDefaults.standard.string(forKey: "role") == nil { role = defaultRole }
         // forward child state changes so SwiftUI re-renders
         for pub in [peers.objectWillChange.eraseToAnyPublisher(), cam.objectWillChange.eraseToAnyPublisher(),
                     store.objectWillChange.eraseToAnyPublisher(), pose.objectWillChange.eraseToAnyPublisher()] {
@@ -48,13 +58,16 @@ final class CaptureModel: ObservableObject {
     var moveInfo: Move? { store.games.first { $0.id == game }?.moves.first { $0.id == move } }
 
     // MARK: Leader actions
+    func setRole(_ r: Role) { role = r }
+
     func recordTapped() {
         if cam.isRecording { stopAll(); return }
         let g = calibrationMode ? "_calib" : game, m = calibrationMode ? "calib" : move
         if calibrationMode { store.setupId = String(format: "setup_%03d", Int(Date().timeIntervalSince1970) % 100000) }
         let t = store.nextTake(game: g, move: m)
-        peers.send(.arm(game: g, move: m, take: t, setupId: store.setupId, calibration: calibrationMode))
-        let startShared = peers.sharedNow + 1.0
+        cam.setFPS(wantFPS)
+        peers.send(.arm(game: g, move: m, take: t, setupId: store.setupId, calibration: calibrationMode, fps: wantFPS))
+        let startShared = peers.sharedNow + 1.5      // time for every device to switch formats
         peers.send(.start(atShared: startShared))
         begin(game: g, move: m, take: t, startShared: startShared)
         chirp.play(atHost: peers.toLocal(startShared) + 0.5)
@@ -81,8 +94,9 @@ final class CaptureModel: ObservableObject {
     // MARK: both phones
     private func handle(_ m: Msg) {
         switch m {
-        case .arm(let g, let mv, let t, let setup, let cal):
+        case .arm(let g, let mv, let t, let setup, let cal, let fps):
             store.setupId = setup; calibrationMode = cal
+            if cam.fps != fps { cam.setFPS(fps) }      // devices that can't reach it use their max
             if !cal { game = g; move = mv }
             current = (store.takeId(g, mv, t), t, cal)
         case .start(let at):
@@ -122,7 +136,7 @@ final class CaptureModel: ObservableObject {
             var meta: [String: Any] = [
                 "game": g, "move": m, "take": t, "role": self.role.rawValue, "takeId": id,
                 "sharedStart": firstHost + offset, "fps": self.cam.fps, "lens": "wide_1x",
-                "setupId": self.store.setupId, "clockRttMs": self.peers.rttMs, "device": UIDevice.current.name,
+                "setupId": self.store.setupId, "clockRttMs": self.peers.rttMs, "device": Platform.deviceName,
                 "camera": self.cam.lensInfo, "app": "SLU Capture 2.0", "bad": false]
             if g == "_calib" { meta["calibration"] = true }
             let metaURL = base.appendingPathExtension("json")

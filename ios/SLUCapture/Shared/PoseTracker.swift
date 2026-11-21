@@ -23,30 +23,39 @@ final class PoseTracker: ObservableObject {
         ("right_shoulder_1_joint", "right_forearm_joint"), ("right_forearm_joint", "right_hand_joint"),
         ("root", "left_upLeg_joint"), ("left_upLeg_joint", "left_leg_joint"), ("left_leg_joint", "left_foot_joint"),
         ("root", "right_upLeg_joint"), ("right_upLeg_joint", "right_leg_joint"), ("right_leg_joint", "right_foot_joint")]
+    static func key(_ raw: String) -> String { raw.replacingOccurrences(of: "human_", with: "") }
     static let limbs = ["head_joint", "left_hand_joint", "right_hand_joint", "left_foot_joint", "right_foot_joint"]
 
     func process(_ sb: CMSampleBuffer) {
         let t = CMSampleBufferGetPresentationTimeStamp(sb).seconds
         guard t - last > 0.1, !busy, let px = CMSampleBufferGetImageBuffer(sb) else { return }
+        guard #available(iOS 17.0, macOS 14.0, *) else { return }   // iPad Air 2 / older Macs: no live skeleton
         last = t; busy = true
         q.async { [weak self] in
             defer { self?.busy = false }
+            self?.detect3D(px, t: t)
+        }
+    }
+
+    @available(iOS 17.0, macOS 14.0, *)
+    private func detect3D(_ px: CVPixelBuffer, t: Double) {
+        do {
             let req = VNDetectHumanBodyPose3DRequest()
             let h = VNImageRequestHandler(cvPixelBuffer: px, orientation: .up)
             try? h.perform([req])
-            guard let self, let obs = req.results?.first else {
-                DispatchQueue.main.async { self?.joints = [:] }; return
+            guard let obs = req.results?.first else {
+                DispatchQueue.main.async { self.joints = [:] }; return
             }
             var pts: [String: CGPoint] = [:]
             var j3: [String: [Float]] = [:]
             for name in obs.availableJointNames {
                 if let p = try? obs.pointInImage(name) {
-                    pts[name.rawValue.rawValue] = CGPoint(x: p.x, y: 1 - p.y)
+                    pts[Self.key(name.rawValue.rawValue)] = CGPoint(x: p.x, y: 1 - p.y)
                 }
                 if let r = try? obs.recognizedPoint(name) {
                     // camera space: root position + model-space joint offset
                     let m = simd_mul(obs.cameraOriginMatrix.inverse, r.position)
-                    j3[name.rawValue.rawValue] = [m.columns.3.x, m.columns.3.y, m.columns.3.z]
+                    j3[Self.key(name.rawValue.rawValue)] = [m.columns.3.x, m.columns.3.y, m.columns.3.z]
                 }
             }
             let out = Self.limbs.filter { n in

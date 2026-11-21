@@ -297,4 +297,23 @@ def run(Pj, W, fps, cfg, move, info, aux=None):
         hits = [int(np.searchsorted(tau, h)) for h in hits]
     clip["hit_frames"] = hits
     clip["contacts"] = {s: c.tolist() for s, (c, _) in foot_contacts(P, fps, cfg).items()}
+    out_fps = float(cfg.get("fps", 60))
+    if fps > out_fps * 1.5:          # slow-mo capture (e.g. 240): solved at full rate, delivered at 60
+        clip = downsample(clip, fps / out_fps)
+        clip["fps"] = out_fps
+        qc["capture_fps"] = fps
     return clip, qc
+
+
+def downsample(clip, factor):
+    """Resample a high-fps clip to output fps; hit frames / contacts / source map follow."""
+    T = len(clip["quats"])
+    tau = np.arange(0, T - 1 + 1e-9, factor)
+    src = clip["src_index"]
+    con = {k: np.asarray(v) for k, v in clip["contacts"].items()}
+    clip = resample(clip, tau)
+    idx = np.clip(np.round(tau).astype(int), 0, T - 1)
+    clip["src_index"] = src[idx]
+    clip["contacts"] = {k: v[idx].tolist() for k, v in con.items()}
+    clip["hit_frames"] = [int(round(h / factor)) for h in clip.get("hit_frames", [])]
+    return clip
