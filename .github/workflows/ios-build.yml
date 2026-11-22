@@ -1,0 +1,30 @@
+name: Build SLU Capture (iOS + Mac)
+on:
+  push:
+    paths: ["ios/**", ".github/workflows/ios-build.yml"]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - scheme: SLUCapture
+            dest: "generic/platform=iOS"
+          - scheme: SLUCaptureMac
+            dest: "generic/platform=macOS"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ${{ matrix.scheme }} (no signing)
+        working-directory: ios/SLUCapture
+        run: |
+          set -o pipefail
+          xcodebuild -project SLUCapture.xcodeproj -target ${{ matrix.scheme }} -configuration Debug \
+            -destination "${{ matrix.dest }}" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build 2>&1 \
+            | tee build.log | grep -E "error:|warning: .*deprecated|BUILD (SUCCEEDED|FAILED)" || true
+          grep -q "BUILD SUCCEEDED" build.log
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with: {name: "log-${{ matrix.scheme }}", path: ios/SLUCapture/build.log}
